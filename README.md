@@ -2,9 +2,11 @@
 
 《算法导论（原书第3版）》（CLRS）数据结构章节的 Python 分节实现 demo。
 
-覆盖范围：**第三部分 数据结构（第10~14章）** 与 **第五部分 高级数据结构（第18~21章）**，共 9 章 21 个可运行文件，每个 demo 独立运行（`python <file>`），带中文注释、操作复杂度标注与运行时自校验（不变量检查 / 与暴力法对拍）。
+覆盖范围：**第三部分 数据结构（第10~14章）** 与 **第五部分 高级数据结构（第18~21章）**，共 9 章 30 个可运行文件。每章两类文件：
+- **实现 demo**（`chXX_YY_*.py`）：结构本体，带中文注释、复杂度标注与运行时自校验（不变量检查 / 与暴力法对拍）
+- **应用 demo**（`chXX_app_*.py`）：每个结构配真实应用场景 + 正确性对拍 + 效率基准（与朴素做法/工业实现同台计时）
 
-## 目录
+## 目录（实现 demo）
 
 | 章节 | 文件 | 内容 |
 |---|---|---|
@@ -38,6 +40,20 @@ python ch13_red_black_trees/ch13_01_rb_insert.py
 # 全量运行
 for f in $(find . -name "*.py" -not -path "./.git/*" | sort); do python "$f"; done
 ```
+
+## 目录（应用 demo：真实场景 + 正确性对拍 + 效率基准）
+
+| 章节 | 文件 | 应用场景 | 效率读数（实测） |
+|---|---|---|---|
+| 10 | `ch10_basic_data_structures/ch10_app_stack_queue_app.py` | 括号匹配 + RPN 求值；LRU 缓存（对拍 OrderedDict） | 环形队列比 list.pop(0) 反例快 **235×** |
+| 11 | `ch11_hash_tables/ch11_app_hash_app.py` | 词频统计（对拍 Counter）；Two-Sum；拼写检查器 | 哈希 Two-Sum 比暴力快 **746×**；查词快 78× |
+| 12 | `ch12_binary_search_trees/ch12_app_bst_app.py` | 动态电话簿 vs 排序数组；范围查询剪枝 vs 全表扫；顺序插入退化实验 | 范围查询快 17×；顺序插入树高=n（4000 个→高 4000）实证 BST 退化 |
+| 13 | `ch13_red_black_trees/ch13_app_rb_app.py` | 有序集合 fuzz 对拍；BST vs RBT 顺序插入对抗；事件调度器 ceil 查询 | RBT 搜索比退化 BST 快 **208×**（树高 23 vs 8000） |
+| 14 | `ch14_augmenting_data_structures/ch14_app_augment_app.py` | 会议室冲突检测（区间树）；实时排行榜 rank/kth（顺序统计树） | 冲突查询快 28×；rank 查询快 37× |
+| 18 | `ch18_b_trees/ch18_app_btree_app.py` | 磁盘页 I/O 计数模拟；范围扫描（range scan）；阶数 t 调参 | B树页读比 BST 少 **5.9×**（2.99 vs 17.56 页/查询） |
+| 19 | `ch19_fibonacci_heaps/ch19_app_dijkstra_app.py` | Dijkstra 三实现同台：朴素/二叉堆/斐波那契堆（10 组三方逐点对拍） | V=4000：朴素 461ms vs heapq 4.2ms；理论账 O(E+VlgV) 详解 |
+| 20 | `ch20_van_emde_boas/ch20_app_port_allocator.py` | TCP 端口池分配器 allocate/allocate_at/release（对拍 bitmap 版） | 高密度下 vEB 比 linear probing 快 **25×** |
+| 21 | `ch21_disjoint_sets/ch21_app_disjoint_app.py` | 图像连通域（对拍 BFS）；渗流相变蒙特卡洛（p*≈0.59 复现）；Kruskal 迷宫生成+ASCII 渲染；路径压缩微基准 | 渗流率 0.55→0.65 从 18.7%→85.7% 相变清晰；压缩后链深 3 vs 7 |
 
 ## 实现说明
 

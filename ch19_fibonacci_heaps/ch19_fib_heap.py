@@ -14,9 +14,9 @@
 
 
 class FibNode:
-    __slots__ = ("key", "degree", "p", "child", "left", "right", "mark")
+    __slots__ = ("key", "degree", "p", "child", "left", "right", "mark", "payload")
 
-    def __init__(self, key):
+    def __init__(self, key, payload=None):
         self.key = key
         self.degree = 0
         self.p = None
@@ -24,6 +24,7 @@ class FibNode:
         self.left = self
         self.right = self
         self.mark = False
+        self.payload = payload           # 附载（如图算法的顶点 id），不参与比较
 
 
 class FibonacciHeap:
@@ -52,9 +53,9 @@ class FibonacciHeap:
         x.right.left = x.left
 
     # ---------- 19.2 可合并堆操作 ----------
-    def insert(self, k):
+    def insert(self, k, payload=None):
         """O(1)"""
-        x = FibNode(k)
+        x = FibNode(k, payload)
         self._add_to_rootlist(x)
         self.n += 1
         return x
@@ -85,6 +86,11 @@ class FibonacciHeap:
 
     def extract_min(self):
         """EXTRACT-MIN：摘 min，孩子进根环，consolidate。摊还 O(lg n)"""
+        z = self._extract_min_node()
+        return z.key if z is not None else None
+
+    def _extract_min_node(self):
+        """同 extract_min 但返回结点本身（Dijkstra 等需要 payload 的场景）。"""
         z = self.min
         if z is None:
             return None
@@ -109,7 +115,7 @@ class FibonacciHeap:
             self.min = z.right
             self._consolidate()
         self.n -= 1
-        return z.key
+        return z
 
     def _consolidate(self):
         """合并同度树。"""
