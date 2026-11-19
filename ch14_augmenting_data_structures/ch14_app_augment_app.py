@@ -99,10 +99,20 @@ class Leaderboard:
         return ckey % 1_000_000, ckey // 1_000_000
 
     def add(self, pid, score):
-        """新玩家入场（要求 pid 尚未在场）。O(lg n)。
-        分数变动场景用 rebuild：OSTree 未实现删除（ch14 重点在扩张非删除）。"""
-        assert pid not in self.player_key, "pid 已在场，请用 rebuild"
+        """新玩家入场（要求 pid 尚未在场）。O(lg n)"""
+        assert pid not in self.player_key, "pid 已在场"
         ck = self._ckey(score, pid)
+        self.tree.insert(ck)
+        self.player_key[pid] = ck
+        self.key_player[ck] = pid
+
+    def update_score(self, pid, new_score):
+        """玩家动态上分/下分：OS-DELETE 旧键 + INSERT 新键。O(lg n)。
+        （原来用 rebuild 绕过——现在 ch14_01 已实现真删除。）"""
+        old_ck = self.player_key[pid]
+        assert self.tree.delete(old_ck), "删除旧分数失败"
+        del self.key_player[old_ck]
+        ck = self._ckey(new_score, pid)
         self.tree.insert(ck)
         self.player_key[pid] = ck
         self.key_player[ck] = pid
@@ -173,6 +183,24 @@ def demo_leaderboard():
     t_sort = (time.perf_counter() - t0) * len(probes) / 50
     print(f"  500 次名次查询：OS-RANK {t_ost*1000:7.2f} ms | 全排序+index(折算) {t_sort*1000:9.2f} ms → 快 {t_sort/t_ost:.0f} 倍")
     print(f"  Top3: {[(lb.kth(k)) for k in (1,2,3)]}")
+
+    # 动态上分：update_score 走真 delete+insert，每步后与排序模型对拍
+    print("  动态上分 200 步（OS-DELETE+INSERT vs 排序模型）：")
+    bad = 0
+    for step in range(200):
+        pid = random.choice(players)
+        ns = random.randrange(0, 10_000)
+        lb.update_score(pid, ns)
+        scores[pid] = ns
+        if step % 40 == 0 or step == 199:
+            ref2 = sorted(scores.items(), key=lambda kv: -kv[1])
+            for k in (1, 100, 300):
+                got = lb.kth(k)
+                want = ref2[k - 1]
+                if got != want:
+                    bad += 1
+                    print(f"    ✗ step{step} 第{k}名 got {got} want {want}")
+    print(f"  200 步动态上分后 kth 抽验:", "✓" if bad == 0 else "✗")
 
 
 def main():

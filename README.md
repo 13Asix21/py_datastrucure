@@ -1,10 +1,10 @@
 # py_datastrucure
 
-《算法导论（原书第3版）》（CLRS）数据结构章节的 Python 分节实现 demo。
+《算法导论（原书第3版）》（CLRS）数据结构与图算法章节的 Python 分节实现 demo。
 
-覆盖范围：**第三部分 数据结构（第10~14章）** 与 **第五部分 高级数据结构（第18~21章）**，共 9 章 30 个可运行文件。每章两类文件：
-- **实现 demo**（`chXX_YY_*.py`）：结构本体，带中文注释、复杂度标注与运行时自校验（不变量检查 / 与暴力法对拍）
-- **应用 demo**（`chXX_app_*.py`）：每个结构配真实应用场景 + 正确性对拍 + 效率基准（与朴素做法/工业实现同台计时）
+覆盖范围：**第6章 堆**、**第三部分 数据结构（第10~14章）**、**第五部分 高级数据结构（第18~21章）**、**第六部分 图算法（第22~26章）**，共 13 章 39 个可运行文件。每章两类文件：
+- **实现 demo**（`chXX_YY_*.py`）：结构/算法本体，带中文注释、复杂度标注与运行时自校验（不变量检查 / 与暴力法对拍）
+- **应用 demo**（`chXX_app_*.py`）：配真实应用场景 + 正确性对拍 + 效率基准（与朴素做法/工业实现同台计时）
 
 ## 目录（实现 demo）
 
@@ -30,6 +30,13 @@
 | 19.1~19.3 | `ch19_fibonacci_heaps/ch19_fib_heap.py` | 斐波那契堆全操作：INSERT/UNION/EXTRACT-MIN（consolidate）/DECREASE-KEY（cut+级联切割）/DELETE，不变量校验 + 300 步混战 |
 | 20.1~20.3 | `ch20_van_emde_boas/ch20_veb_tree.py` | van Emde Boas 树：summary/cluster/min/max 冗余、MEMBER/INSERT/SUCCESSOR/PREDECESSOR/DELETE，与 Python set 2000 次操作对拍 |
 | 21.1~21.4 | `ch21_disjoint_sets/ch21_disjoint_set.py` | 链表表示 + 按秩合并/路径压缩森林；应用：连通分量、Kruskal 环检测，路径压缩步数实验 |
+| 6.1~6.5 | `ch06_heaps/ch06_01_heap.py` | 二叉堆：MAX-HEAPIFY / BUILD-MAX-HEAP O(n) / HEAPSORT / 优先队列接口（EXTRACT-MAX、INCREASE-KEY） |
+| 22.1~22.3 | `ch22_graph_algorithms/ch22_01_bfs_dfs.py` | 邻接表、BFS 最短路、DFS 时间戳/括号化定理/边四分类 |
+| 22.4~22.5 | `ch22_graph_algorithms/ch22_02_topological_scc.py` | 拓扑排序（DFS 版 + Kahn 版对拍）、Kosaraju SCC（vs 传递闭包参照） |
+| 23.2 | `ch23_mst/ch23_mst.py` | Kruskal（并查集）+ Prim（小顶堆）双实现互检 + 树性校验 |
+| 24.1~24.2 | `ch24_shortest_paths/ch24_bellman_ford.py` | Bellman-Ford（负环检测）+ DAG-SHORTEST-PATHS；vs Dijkstra 三方对拍 |
+| 25.2 | `ch25_all_pairs_shortest_paths/ch25_floyd_warshall.py` | Floyd-Warshall O(V³) + 传递闭包；vs V次Dijkstra 全矩阵互检 |
+| 26.2 | `ch26_max_flow/ch26_max_flow.py` | Edmonds-Karp O(VE²)（BFS 增广）；最大流=最小割验证；二分图匹配建模 |
 
 ## 运行
 
@@ -54,6 +61,8 @@ for f in $(find . -name "*.py" -not -path "./.git/*" | sort); do python "$f"; do
 | 19 | `ch19_fibonacci_heaps/ch19_app_dijkstra_app.py` | Dijkstra 三实现同台：朴素/二叉堆/斐波那契堆（10 组三方逐点对拍） | V=4000：朴素 461ms vs heapq 4.2ms；理论账 O(E+VlgV) 详解 |
 | 20 | `ch20_van_emde_boas/ch20_app_port_allocator.py` | TCP 端口池分配器 allocate/allocate_at/release（对拍 bitmap 版） | 高密度下 vEB 比 linear probing 快 **25×** |
 | 21 | `ch21_disjoint_sets/ch21_app_disjoint_app.py` | 图像连通域（对拍 BFS）；渗流相变蒙特卡洛（p*≈0.59 复现）；Kruskal 迷宫生成+ASCII 渲染；路径压缩微基准 | 渗流率 0.55→0.65 从 18.7%→85.7% 相变清晰；压缩后链深 3 vs 7 |
+| 6 | `ch06_heaps/ch06_app_heap_app.py` | Top-K 流式守门员（四方对拍）；任务调度器（10 万任务 vs heapq）；heapsort vs Timsort | BUILD 比逐插入快 1.9×；纯 Python 堆与 heapq 常数差 6×（同阶） |
+| 22 | `ch22_graph_algorithms/ch22_app_graph_app.py` | 社交网络六度分隔（BFS 平均 5.83 跳）；构建系统拓扑序；网页 SCC 集团；大图遍历基准 | BFS/递归DFS/栈DFS 三方同台；SCC 集团结构即分量图 DAG |
 
 ## 实现说明
 
