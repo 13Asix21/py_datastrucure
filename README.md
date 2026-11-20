@@ -1,8 +1,8 @@
 # py_datastrucure
 
-《算法导论（原书第3版）》（CLRS）数据结构与图算法章节的 Python 分节实现 demo。
+《算法导论（原书第3版）》（CLRS）数据结构、排序与算法设计章节的 Python 分节实现 demo。
 
-覆盖范围：**第6章 堆**、**第三部分 数据结构（第10~14章）**、**第五部分 高级数据结构（第18~21章）**、**第六部分 图算法（第22~26章）**，共 13 章 39 个可运行文件。每章两类文件：
+覆盖范围：**第6章 堆**、**第7~9章 排序与顺序统计**、**第15章 动态规划**、**第16章 贪心**、**第17章 摊还分析**、**第三部分 数据结构（第10~14章）**、**第五部分 高级数据结构（第18~21章）**、**第六部分 图算法（第22~26章）**，共 19 章 46 个可运行文件。每章两类文件：
 - **实现 demo**（`chXX_YY_*.py`）：结构/算法本体，带中文注释、复杂度标注与运行时自校验（不变量检查 / 与暴力法对拍）
 - **应用 demo**（`chXX_app_*.py`）：配真实应用场景 + 正确性对拍 + 效率基准（与朴素做法/工业实现同台计时）
 
@@ -37,6 +37,12 @@
 | 24.1~24.2 | `ch24_shortest_paths/ch24_bellman_ford.py` | Bellman-Ford（负环检测）+ DAG-SHORTEST-PATHS；vs Dijkstra 三方对拍 |
 | 25.2 | `ch25_all_pairs_shortest_paths/ch25_floyd_warshall.py` | Floyd-Warshall O(V³) + 传递闭包；vs V次Dijkstra 全矩阵互检 |
 | 26.2 | `ch26_max_flow/ch26_max_flow.py` | Edmonds-Karp O(VE²)（BFS 增广）；最大流=最小割验证；二分图匹配建模 |
+| 7.1~7.3 | `ch07_quicksort/ch07_quicksort.py` | Lomuto/随机化/Hoare 三版本快排 + 尾递归消除；157 组 fuzz；最坏 n² vs 期望 nlgn 比较计数实验 |
+| 8.2~8.4 | `ch08_linear_sorting/ch08_linear_sorting.py` | 计数/基数/桶排序 + 决策树下界论证 + 值域适用域实验（k≫n 崩塌实测 143×） |
+| 9.2~9.3 | `ch09_selection/ch09_selection.py` | RANDOMIZED-SELECT + BFPT 五分化 SELECT（最坏 O(n)）；斜率实验实测 ~3n 常数；流式中位数 vs 双堆 |
+| 15.1~15.4 | `ch15_dynamic_programming/ch15_dp.py` | 钢条切割（naive/memo/bottom-up）、矩阵链乘（对上课本 15125）、LCS、0-1 背包（对拍 2^n 枚举）；应用：git diff 骨架 |
+| 16.1/16.3 | `ch16_greedy/ch16_greedy.py` | 活动选择（贪心 vs DP 120 组对拍）、哈夫曼编码（224 位对上课本；压缩实测贴熵 0.05 位内；回环解码无损） |
+| 17.1~17.3 | `ch17_amortized_analysis/ch17_amortized.py` | 摊还三板斧实操：聚合/记账/势能（二进制计数器三连）+ 动态表倍增（Python list append 原理，实测搬移/插入 1.64） |
 
 ## 运行
 
@@ -63,6 +69,7 @@ for f in $(find . -name "*.py" -not -path "./.git/*" | sort); do python "$f"; do
 | 21 | `ch21_disjoint_sets/ch21_app_disjoint_app.py` | 图像连通域（对拍 BFS）；渗流相变蒙特卡洛（p*≈0.59 复现）；Kruskal 迷宫生成+ASCII 渲染；路径压缩微基准 | 渗流率 0.55→0.65 从 18.7%→85.7% 相变清晰；压缩后链深 3 vs 7 |
 | 6 | `ch06_heaps/ch06_app_heap_app.py` | Top-K 流式守门员（四方对拍）；任务调度器（10 万任务 vs heapq）；heapsort vs Timsort | BUILD 比逐插入快 1.9×；纯 Python 堆与 heapq 常数差 6×（同阶） |
 | 22 | `ch22_graph_algorithms/ch22_app_graph_app.py` | 社交网络六度分隔（BFS 平均 5.83 跳）；构建系统拓扑序；网页 SCC 集团；大图遍历基准 | BFS/递归DFS/栈DFS 三方同台；SCC 集团结构即分量图 DAG |
+| 7-9 | `ch07_quicksort/ch07_app_sorting_app.py` | ORDER BY 多列级联稳定排序（快排不稳定实测）；外排 K 路归并（30 块合成 3 万条）；Top-N 三解法 | nlargest 2.5ms vs 全量排序 31ms；截断语义三解一致 |
 
 ## 实现说明
 
